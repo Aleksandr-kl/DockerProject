@@ -18,7 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
+    <meta name="viewport"public/index.php
+
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
@@ -37,25 +38,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit">Add</button>
     </div>
 </form>
+<?php
+$page= $_GET['page'] ?? 1; //перевіряємо чи існує прараметер,якщо існує тоді ложимо в змінну значення page. А якщо не існу тоді тоді номер сторінки 1
+$limit=5;
+$offset = ($page - 1) * $limit;
+
+?>
 <div>
     <h2>News list</h2>
     <table>
         <?php
-        $sth = $pdo->query("SELECT * FROM news");
+        //$sth = $pdo->query("SELECT * FROM news");
+        $count = $pdo->query("SELECT COUNT(id) as count FROM news");
+        $total = $count->fetchColumn();
+        $totalPages = ceil($total/ $limit);
+        $sth=$pdo->query("SELECT * FROM news LIMIT $limit OFFSET $offset");
+
         while ($row = $sth->fetch()): ?>
             <tr>
                 <td><?= $row['id'] ?></td>
                 <td><?= $row['title'] ?></td>
                 <td><?= $row['date'] ?></td>
             </tr>
+
         <?php endwhile; ?>
     </table>
 
     <div>
-        <?php for ($i = 1; $i <= 10; $i++) : ?>
-        <a href="page=<?= $i ?>"><?= $i; ?></a>
+        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+        <a href="?page=<?= $i ?>"><?= $i; ?></a>
         <?php endfor;?>
     </div>
+
 </div>
 </body>
 </html>
