@@ -1,9 +1,18 @@
 <?php
 global $CoreParams;
+
+use App\Controllers\FrontController;
+use App\Core\Database\Database;
+use App\Core\Database\QueryBuilder;
+
 require_once('../config/config.php');
 
 spl_autoload_register(function ($className) {
-    $path = "../src/{$className}.php";
+    $newClassName=str_replace('\\', '/',$className);
+    if(stripos($newClassName,'App/')===0){
+        $newClassName=substr($newClassName,4);
+    }
+    $path = "../src/{$newClassName}.php";
 
     if (file_exists($path)) {
         require_once $path;
@@ -34,16 +43,17 @@ $query = new QueryBuilder();
 
 //$query->insert(['title' => 'queryInsert3', 'text' => 'wertyblog3'])
 //    ->from('news');
-$query->select(["title"])
-    ->from('news')
-    ->inner_join('comments', 'news.id = comments.news_id');
-echo $query->getSql();
+//$query->select(["title"])
+//    ->from('news')
+//    ->inner_join('comments', 'news.id = comments.news_id');
+//echo $query->getSql();
 
+//
+//$rows = $database->execute($query);
+//var_dump($rows);
 
-$rows = $database->execute($query);
-var_dump($rows);
-
-
+$front_controller=new FrontController();
+$front_controller->run();
 
 
 
