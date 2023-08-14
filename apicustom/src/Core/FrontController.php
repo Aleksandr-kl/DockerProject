@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Core;
 
 use App\Core\Attributes\Route;
-use App\Core\Response;
 use ReflectionClass;
 
 class FrontController
 {
+
     public function run()
     {
         $url = $_SERVER['REQUEST_URI'];
         $url_elements = explode('/', $url);
         $url_elements = array_slice($url_elements, 2);
         if (!empty($url_elements && !empty($url_elements[0]))) {
-            $controller = 'App\Controllers\\'.ucfirst($url_elements[0]) . 'Controller';
+            $controller = 'App\Controllers\\' . ucfirst($url_elements[0]) . 'Controller';
             $method = !empty($url_elements[1]) ? $url_elements[1] : "index";
         } else {
             $controller = "App\Controllers\SiteController";
@@ -45,6 +45,9 @@ class FrontController
                 $response = $controller_object->$method();
                 if ($response instanceof Response) {
                     echo $response->getText();
+                }
+                if (gettype($response) === 'string') {
+                    echo $response;
                 }
             } else echo 'error 404';
         } else {

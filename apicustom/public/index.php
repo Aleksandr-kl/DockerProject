@@ -1,9 +1,9 @@
 <?php
 global $CoreParams;
 
-use App\Controllers\FrontController;
 use App\Core\Database\Database;
 use App\Core\Database\QueryBuilder;
+use App\Core\FrontController;
 
 require_once('../config/config.php');
 
@@ -19,16 +19,21 @@ spl_autoload_register(function ($className) {
     }
 
 });
+$core=\App\Core\Core::GetInstance();
+$core->Init();
+$core->Run();
+$core->Done();
 
-$database = new Database(
-    $CoreParams['Database']['Host'],
-    $CoreParams['Database']['Username'],
-    $CoreParams['Database']['Password'],
-    $CoreParams['Database']['Database']
 
-);
+//
+//\App\Core\StaticCore::Init();
+//\App\Core\StaticCore::Run();
+//\App\Core\StaticCore::Done();
 
-$database->connect();
+
+
+
+
 $query = new QueryBuilder();
 //$query->select(["title", "text"])
 //    ->from("news")
@@ -47,13 +52,20 @@ $query = new QueryBuilder();
 //    ->from('news')
 //    ->inner_join('comments', 'news.id = comments.news_id');
 //echo $query->getSql();
+//$query->insert(['title' => 'queryInsert4', 'text' => 'wertyblog4'])->from('news');
+//echo $query->getSql();
 
-//
 //$rows = $database->execute($query);
 //var_dump($rows);
 
-$front_controller=new FrontController();
-$front_controller->run();
+$record=new \App\Models\News();
+$record->title="title1";
+$record->text="text1";
+$record->date="2023-08-11 18:15:31";
+$record->save();
+
+//$front_controller=new FrontController();
+//$front_controller->run();
 
 
 

@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Controllers;
-class SiteController
+use App\Core\Controller;
+
+class SiteController extends Controller
 {
     public function run()
     {
