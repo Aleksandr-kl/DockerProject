@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Core\Response;
 use App\Entity\Category;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,9 +9,10 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+class CategoryController extends AbstractController
 {
 
     /**
@@ -33,30 +33,26 @@ class ProductController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-create', name: 'product_create')]
+    #[Route('category-create', name: 'category_create')]
     public function create(Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset($requestData['price'], $requestData['name'], $requestData['description'], $requestData['category'])) {
+        if (!isset($requestData['category'], $requestData['type'])) {
             throw new Exception("Invalid request data");
         }
 
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
-        if (!$category) {
-            throw Exception("Category with id");
-        }
-        $product = new Product();
+        $category = new Category();
 
-        $product->setPrice($requestData['price']);
-        $product->setName($requestData['name']);
-        $product->setDescription($requestData['description']);
-        $product->setCategory($category);
-        $this->entityManager->persist($product);
+
+        $category->setCategory($requestData['category']);
+        $category->setType($requestData['type']);
+
+        $this->entityManager->persist($category);
 
         $this->entityManager->flush();
 
-        return new JsonResponse($product,\Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
+        return new JsonResponse($category,Response::HTTP_CREATED);
     }
 
     /**
