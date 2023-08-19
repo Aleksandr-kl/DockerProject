@@ -40,8 +40,8 @@ class Product implements JsonSerializable
 
     #[ORM\ManyToOne(targetEntity: Category::class,inversedBy: "products")]
     private ?Category $category=null;
-    #[ORM\OneToOne(targetEntity: ProductiInfo::class)]
-    private ?Category $productInfo=null;
+//    #[ORM\OneToOne(targetEntity: ProductiInfo::class)]
+//    private ?Category $productInfo=null;
     #[ORM\ManyToMany(targetEntity: Test::class)]
     private Collection $test;
 

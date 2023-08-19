@@ -56,7 +56,7 @@ class ProductController extends AbstractController
 
         $this->entityManager->flush();
 
-        return new JsonResponse($product,\Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
+        return new JsonResponse($product, \Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
     }
 
     /**

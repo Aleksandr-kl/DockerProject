@@ -29,15 +29,26 @@ class TestController extends AbstractController
     }
 
 
-
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws Exception
      */
-    #[Route(path:"test",name: "app_test")]
-    public function test(Request $request):JsonResponse
+    #[Route(path: "test", name: "app_test")]
+    public function test(Request $request): JsonResponse
     {
-        $product=$this->entityManager->getRepository(Product::class)->getAllProductsByName("test");
+        $requestData = $request->query->all();
+//        if(!isset($requestData['name'],$requestData['page'],$requestData['itemsPerPage'])){
+//            throw new Exception("Invalid request data ");
+//        }
+
+
+        $product = $this->entityManager->getRepository(Product::class)->getAllProductsByName(
+            $requestData['itemsPerPage'] ?? 30,
+            $requestData['page'] ?? 1,
+            $requestData['categoryName'] ?? null,
+            $requestData['name'] ?? null
+        );
         return new JsonResponse($product);
     }
 
