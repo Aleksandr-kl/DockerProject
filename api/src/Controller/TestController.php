@@ -46,7 +46,7 @@ class TestController extends AbstractController
         $product = $this->entityManager->getRepository(Product::class)->getAllProductsByName(
             $requestData['itemsPerPage'] ?? 30,
             $requestData['page'] ?? 1,
-            $requestData['categoryName'] ?? null,
+            $requestData['categoryCategory'] ?? null,
             $requestData['name'] ?? null
         );
         return new JsonResponse($product);

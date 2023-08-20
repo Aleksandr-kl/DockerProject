@@ -32,7 +32,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder("product")
             ->join('product.category', 'category')
-            ->andWhere('category.name LIKE :categoryName')
+            ->andWhere('category.type LIKE :categoryName')
             ->andWhere("product.name LIKE :name")
             ->setParameter("name", "%" . $name . "%")
             ->setParameter("categoryName", "%" . $categoryName . "%")
