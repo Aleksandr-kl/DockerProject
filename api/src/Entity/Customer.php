@@ -68,7 +68,6 @@ class Customer implements JsonSerializable
         $this->vehicles = $vehicles;
     }
 
-
     /**
      * @return int|null
      */
