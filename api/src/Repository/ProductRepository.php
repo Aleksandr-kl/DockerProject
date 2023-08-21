@@ -21,29 +21,6 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    /**
-     * @param int $itemsPerPage
-     * @param int $page
-     * @param string|null $categoryName
-     * @param string|null $name
-     * @return float|int|mixed|string
-     */
-    public function getAllProductsByName(int $itemsPerPage, int $page, ?string $categoryName = null, ?string $name = null)
-    {
-        return $this->createQueryBuilder("product")
-            ->join('product.category', 'category')
-            ->andWhere('category.type LIKE :categoryName')
-            ->andWhere("product.name LIKE :name")
-            ->setParameter("name", "%" . $name . "%")
-            ->setParameter("categoryName", "%" . $categoryName . "%")
-            ->setFirstResult($itemsPerPage * ($page - 1))
-            ->setMaxResults($itemsPerPage)
-            ->orderBy('product.name','DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */

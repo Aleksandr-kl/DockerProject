@@ -16,74 +16,67 @@ class Category implements JsonSerializable
     #[ORM\Column]
     private ?int $id = null;
 
-    public function getProduct(): Product
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getProducts(): ArrayCollection|Collection
     {
-        return $this->product;
+        return $this->products;
     }
 
-    public function setProduct(Product $product): void
+    /**
+     * @param ArrayCollection|Collection $products
+     * @return void
+     */
+    public function setProducts(ArrayCollection|Collection $products): void
     {
-        $this->product = $product;
+        $this->products = $products;
     }
 
-    #[ORM\Column(length: 255)]
-    private ?string $Category = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
     private Collection $products;
-public function __construct()
-{
-    $this->products=new ArrayCollection();
-}
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCategory(): ?string
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
     {
-        return $this->Category;
+        return $this->name;
     }
 
-    public function setCategory(?string $Category): void
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName(string $name): static
     {
-        $this->Category = $Category;
-    }
-
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function setProducts(Collection $products): void
-    {
-        $this->products = $products;
-    }
-
-
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize():array
     {
-        return[
-            "id"=>$this->getId(),
-            "category"=>$this->getCategory(),
-            "type"=>$this->getType()
+        return [
+            "id"          => $this->getId(),
+            "name"        => $this->getName(),
+            "product" => $this->getProducts(),
         ];
     }
 }

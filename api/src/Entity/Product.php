@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
-
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -20,59 +18,13 @@ class Product implements JsonSerializable
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: '0')]
+    #[ORM\Column]
+    private ?int $count = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): void
-    {
-        $this->category = $category;
-    }
-
-
-
-    #[ORM\ManyToOne(targetEntity: Category::class,inversedBy: "products")]
-    private ?Category $category=null;
-//    #[ORM\OneToOne(targetEntity: ProductiInfo::class)]
-//    private ?Category $productInfo=null;
-    #[ORM\ManyToMany(targetEntity: Test::class)]
-    private Collection $test;
-
-    public function getTest(): Collection
-    {
-        return $this->test;
-    }
-
-    public function setTest(Collection $test): void
-    {
-        $this->test = $test;
-    }
-
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getProductInfo(): ?Category
-    {
-        return $this->productInfo;
-    }
-
-    public function setProductInfo(?Category $productInfo): void
-    {
-        $this->productInfo = $productInfo;
-    }
-
-
-
-
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+    private ?Category $category = null;
 
     /**
      * @return int|null
@@ -80,6 +32,23 @@ class Product implements JsonSerializable
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category|null $category
+     * @return void
+     */
+    public function setCategory(?Category $category): void
+    {
+        $this->category = $category;
     }
 
     /**
@@ -97,6 +66,25 @@ class Product implements JsonSerializable
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCount(): ?int
+    {
+        return $this->count;
+    }
+
+    /**
+     * @param int $count
+     * @return $this
+     */
+    public function setCount(int $count): static
+    {
+        $this->count = $count;
 
         return $this;
     }
@@ -121,35 +109,15 @@ class Product implements JsonSerializable
     }
 
     /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string|null $description
-     * @return $this
-     */
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize(): array
     {
         return [
-            "id"        => $this->getId(),
-            "name"        => $this->getName(),
-            "price"       => $this->getPrice(),
-            "description" => $this->getDescription(),
-            "category"=>$this->getCategory()
+            "id" => $this->getId(),
+            "name" => $this->getName(),
+            "price" => $this->getPrice(),
+            "category" => $this->getCategory()
         ];
     }
 }
