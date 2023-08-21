@@ -113,10 +113,16 @@ class DetailService implements JsonSerializable
     }
 
     /**
-     * @return void
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            "id"   => $this->getId(),
+            "description" => $this->getDescription(),
+            "price" => $this->getPrice(),
+            "order"=>$this->getOrder(),
+            "typeService"=>$this->getTypeService()
+        ];
     }
 }

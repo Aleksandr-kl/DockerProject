@@ -156,10 +156,18 @@ class Order implements JsonSerializable
     }
 
     /**
-     * @return void
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            "id" => $this->getId(),
+            "data_accept" => $this->getDateAccept(),
+            "status" => $this->getStatus(),
+            "vehicle" => $this->getVehicle(),
+            "customer" => $this->getCustomer(),
+            "employee" => $this->getEmployee(),
+            "detail_service" => $this->getDetailServices()
+        ];
     }
 }

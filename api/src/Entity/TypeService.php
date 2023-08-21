@@ -91,10 +91,15 @@ class TypeService implements JsonSerializable
     }
 
     /**
-     * @return void
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize():array
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            "id"=>$this->getId(),
+            "name"=>$this->getName(),
+            "price"=>$this->getPrice(),
+            "service"=>$this->getServices()
+        ];
     }
 }

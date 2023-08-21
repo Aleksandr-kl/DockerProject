@@ -49,6 +49,7 @@ class Employee implements JsonSerializable
     {
         $this->orders = $orders;
     }
+
     /**
      * @return int|null
      */
@@ -134,10 +135,17 @@ class Employee implements JsonSerializable
     }
 
     /**
-     * @return void
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            "id" => $this->getId(),
+            "first_name" => $this->getFirstName(),
+            "last_name" => $this->getLastName(),
+            "position" => $this->getPosition(),
+            "phone_number" => $this->getPhoneNumber(),
+            "order" => $this->getOrders()
+        ];
     }
 }

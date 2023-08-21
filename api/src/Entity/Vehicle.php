@@ -49,6 +49,7 @@ class Vehicle implements JsonSerializable
     {
         $this->orders = $orders;
     }
+
     /**
      * @return Customer|null
      */
@@ -132,10 +133,17 @@ class Vehicle implements JsonSerializable
     }
 
     /**
-     * @return void
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            "id" => $this->getId(),
+            "brand" => $this->getBrand(),
+            "model" => $this->getModel(),
+            "customer" => $this->getCustomer(),
+            "win_code" => $this->getWinCode(),
+            "order" => $this->getOrders()
+        ];
     }
 }
