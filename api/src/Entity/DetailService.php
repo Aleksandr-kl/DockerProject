@@ -20,7 +20,52 @@ class DetailService implements JsonSerializable
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
+    /**
+     * @var Order|null
+     */
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: "detailService")]
+    private ?Order $order = null;
+    /**
+     * @var TypeService|null
+     */
+    #[ORM\ManyToOne(targetEntity: TypeService::class, inversedBy: "detailService")]
+    private ?TypeService $typeService = null;
 
+    /**
+     * @return TypeService|null
+     */
+    public function getTypeService(): ?TypeService
+    {
+        return $this->typeService;
+    }
+
+    /**
+     * @param TypeService|null $typeService
+     * @return void
+     */
+    public function setTypeService(?TypeService $typeService): void
+    {
+        $this->typeService = $typeService;
+    }
+
+
+
+    /**
+     * @return Order|null
+     */
+    public function getOrder(): ?Order
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param Order|null $order
+     * @return void
+     */
+    public function setOrder(?Order $order): void
+    {
+        $this->order = $order;
+    }
     /**
      * @return int|null
      */

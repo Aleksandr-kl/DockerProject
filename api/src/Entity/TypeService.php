@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TypeServiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -20,7 +22,28 @@ class TypeService implements JsonSerializable
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
+    /**
+     * @var Collection
+     */
+    #[ORM\OneTomany(mappedBy: "typeService", targetEntity: DetailService::class)]
+    private Collection $services;
 
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getServices(): ArrayCollection|Collection
+    {
+        return $this->services;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $services
+     * @return void
+     */
+    public function setServices(ArrayCollection|Collection $services): void
+    {
+        $this->services = $services;
+    }
     /**
      * @return int|null
      */

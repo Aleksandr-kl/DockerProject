@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VehicleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
@@ -22,6 +24,47 @@ class Vehicle implements JsonSerializable
 
     #[ORM\Column(length: 255)]
     private ?string $win_code = null;
+
+    /**
+     * @var Customer|null
+     */
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: "vehicle")]
+    private ?Customer $customer = null;
+    #[ORM\OneTomany(mappedBy: "vehicle", targetEntity: Order::class)]
+    private Collection $orders;
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getOrders(): ArrayCollection|Collection
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $orders
+     * @return void
+     */
+    public function setOrders(ArrayCollection|Collection $orders): void
+    {
+        $this->orders = $orders;
+    }
+    /**
+     * @return Customer|null
+     */
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param Customer|null $customer
+     * @return void
+     */
+    public function setCustomer(?Customer $customer): void
+    {
+        $this->customer = $customer;
+    }
 
     /**
      * @return int|null

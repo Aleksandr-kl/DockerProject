@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CustomerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
@@ -22,6 +24,50 @@ class Customer implements JsonSerializable
 
     #[ORM\Column(length: 255)]
     private ?string $phone_number = null;
+
+    /**
+     * @return int|null
+     */
+    #[ORM\OneTomany(mappedBy: "customer", targetEntity: Vehicle::class)]
+    private Collection $vehicles;
+
+    #[ORM\OneTomany(mappedBy: "customer", targetEntity: Order::class)]
+    private Collection $orders;
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getOrders(): ArrayCollection|Collection
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $orders
+     * @return void
+     */
+    public function setOrders(ArrayCollection|Collection $orders): void
+    {
+        $this->orders = $orders;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getVehicles(): ArrayCollection|Collection
+    {
+        return $this->vehicles;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $vehicles
+     * @return void
+     */
+    public function setVehicles(ArrayCollection|Collection $vehicles): void
+    {
+        $this->vehicles = $vehicles;
+    }
+
 
     /**
      * @return int|null
