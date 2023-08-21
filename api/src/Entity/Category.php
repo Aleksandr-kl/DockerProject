@@ -71,11 +71,14 @@ class Category implements JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize():array
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
     {
         return [
-            "id"          => $this->getId(),
-            "name"        => $this->getName(),
+            "id" => $this->getId(),
+            "name" => $this->getName(),
             "product" => $this->getProducts(),
         ];
     }
