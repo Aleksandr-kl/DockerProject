@@ -2,29 +2,26 @@
 
 namespace App\Controller;
 
-use App\Core\Response;
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TestController extends AbstractController
 {
-
-    /**
-     * @var EntityManagerInterface
-     */
     private EntityManagerInterface $entityManager;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    /**
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager)
     {
+        $this->passwordHasher = $passwordHasher;
         $this->entityManager = $entityManager;
     }
 
@@ -32,25 +29,22 @@ class TestController extends AbstractController
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws Exception
      */
-    #[Route(path: "test", name: "app_test")]
+    #[Route('/test', name: 'test_test')]
     public function test(Request $request): JsonResponse
     {
-        $requestData = $request->query->all();
-//        if(!isset($requestData['name'],$requestData['page'],$requestData['itemsPerPage'])){
-//            throw new Exception("Invalid request data ");
-//        }
+        $pass = "test12345";
+        $user = new User();
 
+        $user->setEmail("test2@gmail.com");
 
-        $product = $this->entityManager->getRepository(Product::class)->getAllProductsByName(
-            $requestData['itemsPerPage'] ?? 30,
-            $requestData['page'] ?? 1,
-            $requestData['categoryCategory'] ?? null,
-            $requestData['name'] ?? null
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $pass
         );
-        return new JsonResponse($product);
+        $user->setPassword($hashedPassword);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        return new JsonResponse();
     }
-
-
 }
