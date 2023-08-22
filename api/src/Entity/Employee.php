@@ -30,7 +30,7 @@ class Employee implements JsonSerializable
     /**
      * @var Collection
      */
-    #[ORM\OneTomany(mappedBy: "employee", targetEntity: Order::class)]
+    #[ORM\OneToMany(mappedBy: "employee", targetEntity: Order::class)]
     private Collection $orders;
 
     /**
@@ -70,7 +70,7 @@ class Employee implements JsonSerializable
      * @param string $first_name
      * @return $this
      */
-    public function setFirstName(string $first_name): static
+    public function setFirstName(string $first_name): self
     {
         $this->first_name = $first_name;
 
@@ -89,7 +89,7 @@ class Employee implements JsonSerializable
      * @param string $last_name
      * @return $this
      */
-    public function setLastName(string $last_name): static
+    public function setLastName(string $last_name): self
     {
         $this->last_name = $last_name;
 
@@ -108,7 +108,7 @@ class Employee implements JsonSerializable
      * @param string $position
      * @return $this
      */
-    public function setPosition(string $position): static
+    public function setPosition(string $position): self
     {
         $this->position = $position;
 
@@ -127,7 +127,7 @@ class Employee implements JsonSerializable
      * @param string $phone_number
      * @return $this
      */
-    public function setPhoneNumber(string $phone_number): static
+    public function setPhoneNumber(string $phone_number): self
     {
         $this->phone_number = $phone_number;
 

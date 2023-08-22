@@ -26,7 +26,7 @@ class Order implements JsonSerializable
     /**
      * @var Collection
      */
-    #[ORM\OneTomany(mappedBy: "order", targetEntity: DetailService::class)]
+    #[ORM\OneToMany(mappedBy: "order", targetEntity: DetailService::class)]
     private Collection $detailServices;
 
     /**
@@ -34,9 +34,14 @@ class Order implements JsonSerializable
      */
     #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: "order")]
     private ?Employee $employee = null;
-
+    /**
+     * @var Customer|null
+     */
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: "order")]
     private ?Customer $customer = null;
+    /**
+     * @var Vehicle|null
+     */
     #[ORM\ManyToOne(targetEntity: Vehicle::class, inversedBy: "order")]
     private ?Vehicle $vehicle = null;
 
@@ -129,7 +134,7 @@ class Order implements JsonSerializable
      * @param \DateTimeInterface $date_accept
      * @return $this
      */
-    public function setDateAccept(\DateTimeInterface $date_accept): static
+    public function setDateAccept(\DateTimeInterface $date_accept): self
     {
         $this->date_accept = $date_accept;
 
@@ -148,7 +153,7 @@ class Order implements JsonSerializable
      * @param string $status
      * @return $this
      */
-    public function setStatus(string $status): static
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 

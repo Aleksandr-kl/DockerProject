@@ -25,7 +25,7 @@ class TypeService implements JsonSerializable
     /**
      * @var Collection
      */
-    #[ORM\OneTomany(mappedBy: "typeService", targetEntity: DetailService::class)]
+    #[ORM\OneToMany(mappedBy: "typeService", targetEntity: DetailService::class)]
     private Collection $services;
 
     /**

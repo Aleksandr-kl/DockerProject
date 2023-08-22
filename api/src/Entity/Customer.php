@@ -28,10 +28,12 @@ class Customer implements JsonSerializable
     /**
      * @return int|null
      */
-    #[ORM\OneTomany(mappedBy: "customer", targetEntity: Vehicle::class)]
+    #[ORM\OneToMany(mappedBy: "customer", targetEntity: Vehicle::class)]
     private Collection $vehicles;
-
-    #[ORM\OneTomany(mappedBy: "customer", targetEntity: Order::class)]
+    /**
+     * @var Collection
+     */
+    #[ORM\OneToMany(mappedBy: "customer", targetEntity: Order::class)]
     private Collection $orders;
 
     /**
@@ -88,7 +90,7 @@ class Customer implements JsonSerializable
      * @param string $first_name
      * @return $this
      */
-    public function setFirstName(string $first_name): static
+    public function setFirstName(string $first_name): self
     {
         $this->first_name = $first_name;
 
@@ -107,7 +109,7 @@ class Customer implements JsonSerializable
      * @param string $last_name
      * @return $this
      */
-    public function setLastName(string $last_name): static
+    public function setLastName(string $last_name): self
     {
         $this->last_name = $last_name;
 

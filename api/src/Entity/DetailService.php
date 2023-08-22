@@ -86,7 +86,7 @@ class DetailService implements JsonSerializable
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -105,7 +105,7 @@ class DetailService implements JsonSerializable
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): static
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 

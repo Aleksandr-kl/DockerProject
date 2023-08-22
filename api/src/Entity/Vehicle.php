@@ -30,7 +30,10 @@ class Vehicle implements JsonSerializable
      */
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: "vehicle")]
     private ?Customer $customer = null;
-    #[ORM\OneTomany(mappedBy: "vehicle", targetEntity: Order::class)]
+    /**
+     * @var Collection
+     */
+    #[ORM\OneToMany(mappedBy: "vehicle", targetEntity: Order::class)]
     private Collection $orders;
 
     /**
@@ -87,7 +90,7 @@ class Vehicle implements JsonSerializable
      * @param string $brand
      * @return $this
      */
-    public function setBrand(string $brand): static
+    public function setBrand(string $brand): self
     {
         $this->brand = $brand;
 
@@ -106,7 +109,7 @@ class Vehicle implements JsonSerializable
      * @param string $model
      * @return $this
      */
-    public function setModel(string $model): static
+    public function setModel(string $model): self
     {
         $this->model = $model;
 
@@ -125,7 +128,7 @@ class Vehicle implements JsonSerializable
      * @param string $win_code
      * @return $this
      */
-    public function setWinCode(string $win_code): static
+    public function setWinCode(string $win_code): self
     {
         $this->win_code = $win_code;
 
