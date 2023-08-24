@@ -7,10 +7,12 @@ use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,20 +33,33 @@ class TestController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/test', name: 'test_test')]
+    //#[IsGranted("ROLE_ADMIN")]
     public function test(Request $request): JsonResponse
     {
-        $pass = "test12345";
-        $user = new User();
+        $user = $this->getUser();
 
-        $user->setEmail("test2@gmail.com");
+        $products=$this->entityManager->getRepository(Product::class)->findAll();
 
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $user,
-            $pass
-        );
-        $user->setPassword($hashedPassword);
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-        return new JsonResponse();
+        if (in_array(User::ROLE_ADMIN, $user->getRoles())) {
+            return new JsonResponse($products);
+        }
+        return new JsonResponse($this->fetchedProductsForUser($products));
+
+
+    }
+
+    /**
+     * @param array $products
+     * @return array
+     */
+    public function fetchedProductsForUser(array $products): array{
+        /** @var Product $product */
+        foreach ($products as  $product){
+            $tmpProductData=$product->jsonSerialize();
+
+            unset($tmpProductData['description']);
+            $fetchedProductsForUser[]=$tmpProductData;
+        }
+        return $fetchedProductsForUser;
     }
 }
