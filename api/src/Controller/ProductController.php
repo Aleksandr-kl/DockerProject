@@ -39,8 +39,9 @@ class ProductController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         if (!isset(
-            $requestData['price'],
             $requestData['name'],
+            $requestData['count'],
+            $requestData['price'],
             $requestData['category']
         )) {
             throw new Exception("Invalid request data");
@@ -55,8 +56,9 @@ class ProductController extends AbstractController
         $product = new Product();
 
         $product
-            ->setPrice($requestData['price'])
             ->setName($requestData['name'])
+            ->setCount($requestData['count'])
+            ->setPrice($requestData['price'])
             ->setCategory($category);
 
         $this->entityManager->persist($product);

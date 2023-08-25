@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -23,9 +25,16 @@ class Product implements JsonSerializable
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
+    /**
+     * @var Category|null
+     */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
     private ?Category $category = null;
-
+    /**
+     * @var Collection
+     */
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Order::class)]
+    private Collection $orders;
     /**
      * @return int|null
      */
@@ -63,7 +72,7 @@ class Product implements JsonSerializable
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -82,7 +91,7 @@ class Product implements JsonSerializable
      * @param int $count
      * @return $this
      */
-    public function setCount(int $count): static
+    public function setCount(int $count): self
     {
         $this->count = $count;
 
@@ -101,7 +110,8 @@ class Product implements JsonSerializable
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): static
+
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 

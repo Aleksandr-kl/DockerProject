@@ -15,7 +15,9 @@ class Category implements JsonSerializable
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -42,11 +44,17 @@ class Category implements JsonSerializable
     #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
     private Collection $products;
 
+    /**
+     * Category constructor
+     */
     public function __construct()
     {
         $this->products = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -64,7 +72,7 @@ class Category implements JsonSerializable
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
