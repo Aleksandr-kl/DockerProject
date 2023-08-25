@@ -86,8 +86,7 @@ class Category implements JsonSerializable
     {
         return [
             "id" => $this->getId(),
-            "name" => $this->getName(),
-            "product" => $this->getProducts(),
+            "name" => $this->getName()
         ];
     }
 }

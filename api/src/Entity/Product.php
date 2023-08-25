@@ -25,11 +25,13 @@ class Product implements JsonSerializable
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
+
     /**
      * @var Category|null
      */
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
     private ?Category $category = null;
+
     /**
      * @var Collection
      */
