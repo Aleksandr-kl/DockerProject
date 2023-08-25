@@ -12,17 +12,26 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
-
+    /**
+     * @var int|null
+     */
     #[ORM\Column]
     private ?int $count = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
 

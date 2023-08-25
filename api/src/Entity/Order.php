@@ -11,14 +11,21 @@ use JsonSerializable;
 #[ORM\Table(name: '`order`')]
 class Order implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    /**
+     * @var int|null
+     */
     #[ORM\Column]
     private ?int $count = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $summa = null;
 
@@ -68,6 +75,10 @@ class Order implements JsonSerializable
      */
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: "orders")]
     private ?Product $product = null;
+
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -111,6 +122,9 @@ class Order implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize(): array
     {
         return [

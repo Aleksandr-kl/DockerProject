@@ -14,22 +14,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_USER = "ROLE_USER";
     public const ROLE_ADMIN = "ROLE_ADMIN";
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
+    /**
+     * @var string
+     */
     #[ORM\Column(type: 'string')]
     private string $name;
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName(string $name): self
     {
         $this->name = $name;
     }
@@ -37,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null
      */
     #[ORM\Column]
     private ?string $password = null;

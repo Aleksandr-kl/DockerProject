@@ -11,6 +11,9 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
