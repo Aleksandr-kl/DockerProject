@@ -47,6 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $name;
     }
     #[ORM\Column]
     private array $roles = [];
