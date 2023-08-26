@@ -42,19 +42,6 @@ class Product implements JsonSerializable
     private ?Category $category = null;
 
     /**
-     * @var Collection
-     */
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Order::class)]
-    private Collection $orders;
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
      * @return Category|null
      */
     public function getCategory(): ?Category
@@ -69,6 +56,37 @@ class Product implements JsonSerializable
     public function setCategory(?Category $category): void
     {
         $this->category = $category;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Collection $orders
+     * @return void
+     */
+    public function setOrders(Collection $orders): void
+    {
+        $this->orders = $orders;
+    }
+
+    /**
+     * @var Collection
+     */
+    #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'products')]
+    private Collection $orders;
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**
@@ -138,7 +156,8 @@ class Product implements JsonSerializable
             "id" => $this->getId(),
             "name" => $this->getName(),
             "price" => $this->getPrice(),
-            "category" => $this->getCategory()
+            "category" => $this->getCategory(),
+            "order" => $this->getOrders()
         ];
     }
 }

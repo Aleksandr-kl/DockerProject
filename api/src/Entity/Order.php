@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -52,29 +53,27 @@ class Order implements JsonSerializable
     private ?User $user = null;
 
     /**
-     * @return Product|null
+     * @return Collection
      */
-    public function getProduct(): ?Product
+    public function getProduct(): Collection
     {
         return $this->product;
     }
 
     /**
-     * @param Product|null $product
+     * @param Collection $product
      * @return void
      */
-    public function setProduct(?Product $product): void
+    public function setProduct(Collection $product): void
     {
         $this->product = $product;
     }
+
     /**
-     * @return int|null
+     * @var Collection
      */
-    /**
-     * @var Product|null
-     */
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: "orders")]
-    private ?Product $product = null;
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'order')]
+    private Collection $product;
 
     /**
      * @return int|null
