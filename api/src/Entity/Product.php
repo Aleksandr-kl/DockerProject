@@ -153,9 +153,9 @@ class Product implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "price" => $this->getPrice(),
+            "id"       => $this->getId(),
+            "name"     => $this->getName(),
+            "price"    => $this->getPrice(),
             "category" => $this->getCategory()
         ];
     }

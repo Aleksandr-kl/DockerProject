@@ -57,23 +57,23 @@ class Order implements JsonSerializable
      */
     public function getProduct(): Collection
     {
-        return $this->product;
+        return $this->products;
     }
 
     /**
-     * @param Collection $product
+     * @param Collection $products
      * @return void
      */
-    public function setProduct(Collection $product): void
+    public function setProduct(Collection $products): void
     {
-        $this->product = $product;
+        $this->products = $products;
     }
 
     /**
      * @var Collection
      */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'order')]
-    private Collection $product;
+    private Collection $products;
 
     /**
      * @return int|null
@@ -127,10 +127,10 @@ class Order implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id" => $this->getId(),
-            "count" => $this->getCount(),
-            "summa" => $this->getSumma(),
-            "user" => $this->getUser(),
+            "id"      => $this->getId(),
+            "count"   => $this->getCount(),
+            "summa"   => $this->getSumma(),
+            "user"    => $this->getUser(),
             "product" => $this->getProduct()
         ];
     }
