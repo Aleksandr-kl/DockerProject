@@ -156,8 +156,7 @@ class Product implements JsonSerializable
             "id" => $this->getId(),
             "name" => $this->getName(),
             "price" => $this->getPrice(),
-            "category" => $this->getCategory(),
-            "order" => $this->getOrders()
+            "category" => $this->getCategory()
         ];
     }
 }
