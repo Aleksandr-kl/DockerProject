@@ -54,15 +54,6 @@ class ProductController extends AbstractController
 
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset(
-            $requestData['name'],
-            $requestData['count'],
-            $requestData['price'],
-            $requestData['category']
-        )) {
-            throw new Exception("Invalid request data");
-        }
-
         $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
 
         if (!$category) {

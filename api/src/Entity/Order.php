@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,6 +47,7 @@ class Order implements JsonSerializable
     {
         $this->user = $user;
     }
+
     /**
      * @var User|null
      */
@@ -53,27 +55,23 @@ class Order implements JsonSerializable
     private ?User $user = null;
 
     /**
-     * @return Collection
-     */
-    public function getProduct(): Collection
-    {
-        return $this->products;
-    }
-
-    /**
-     * @param Collection $products
-     * @return void
-     */
-    public function setProduct(Collection $products): void
-    {
-        $this->products = $products;
-    }
-
-    /**
      * @var Collection
      */
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'order')]
-    private Collection $products;
+    #[ORM\OneToMany(mappedBy: "order", targetEntity: OrderProduct::class, cascade: ["persist", "remove"])]
+    private Collection $orderProducts;
+
+    public function __construct()
+    {
+        $this->orderProducts = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getOrderProducts(): Collection
+    {
+        return $this->orderProducts;
+    }
 
     /**
      * @return int|null
@@ -127,11 +125,9 @@ class Order implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id"      => $this->getId(),
-            "count"   => $this->getCount(),
-            "summa"   => $this->getSumma(),
-            "user"    => $this->getUser(),
-            "product" => $this->getProduct()
+            "id" => $this->getId(),
+            "count" => $this->getCount(),
+            "summa" => $this->getSumma(),
         ];
     }
 }

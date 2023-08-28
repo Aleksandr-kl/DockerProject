@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\Product;
+use App\Entity\User;
 use App\Repository\OrderRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,59 +39,60 @@ class OrderController extends AbstractController
     /**
      * @return JsonResponse
      */
-    #[Route('/orders', name: 'order_list', methods: ['GET'])]
+    #[Route('order-all', name: 'order_list', methods: ['GET'])]
     public function listOrders(): JsonResponse
     {
-        $orders = $this->orderRepository->findAll();
+        if (!in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
+            throw new AccessDeniedHttpException("You do not have permission.");
+        }
 
-        return $this->json($orders);
+        $orders = $this->entityManager->getRepository(Order::class)->findAll();
+
+        return new JsonResponse($orders);
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    #[Route('/orders/{id}', name: 'order_show', methods: ['GET'])]
-    public function showOrder(int $id): JsonResponse
+    #[Route('order/{id}', name: 'order_show', methods: ['GET'])]
+    public function showOrder(string $id): JsonResponse
     {
-        $order = $this->orderRepository->find($id);
+        $order = $this->entityManager->getRepository(Order::class)->find($id);
 
         if (!$order) {
-            return new JsonResponse(['error' => 'Order not found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(["message" => "Order with id " . $id . " not found"], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($order);
+        return new JsonResponse($order);
     }
 
     /**
      * @param Request $request
      * @return JsonResponse
      */
-    #[Route('/orders', name: 'order_create', methods: ['POST'])]
+    #[Route('order-create', name: 'order_create', methods: ['POST'])]
     public function createOrder(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        if (!in_array(User::ROLE_USER, $this->getUser()->getRoles())) {
+            throw new AccessDeniedHttpException("You do not have permission.");
+        }
 
-        $order = new Order();
-        $order->setCount($data['count']);
-        $order->setSumma($data['summa']);
-        $user = $this->getUser();
-        $order->setUser($user);
+        return $this->json (); //($order, Response::HTTP_CREATED);
 
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
-
-        return $this->json($order, Response::HTTP_CREATED);
     }
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    #[Route('/orders/{id}', name: 'order_update', methods: ['PUT'])]
-    public function updateOrder(Request $request, int $id): JsonResponse
+    #[Route('order-update/{id}', name: 'order_update', methods: ['PUT'])]
+    public function updateOrder(Request $request, string $id): JsonResponse
     {
+        if (!in_array(User::ROLE_USER, $this->getUser()->getRoles())) {
+            throw new AccessDeniedHttpException("You do not have permission.");
+        }
         $order = $this->orderRepository->find($id);
 
         if (!$order) {
@@ -98,19 +102,21 @@ class OrderController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $order->setCount($data['count']);
         $order->setSumma($data['summa']);
-
         $this->entityManager->flush();
 
         return $this->json($order);
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    #[Route('/orders/{id}', name: 'order_delete', methods: ['DELETE'])]
-    public function deleteOrder(int $id): JsonResponse
+    #[Route('order-delete/{id}', name: 'order_delete', methods: ['DELETE'])]
+    public function deleteOrder(string $id): JsonResponse
     {
+        if (!in_array(User::ROLE_USER, $this->getUser()->getRoles())) {
+            throw new AccessDeniedHttpException("You do not have permission.");
+        }
         $order = $this->orderRepository->find($id);
 
         if (!$order) {
@@ -122,4 +128,5 @@ class OrderController extends AbstractController
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
 }
