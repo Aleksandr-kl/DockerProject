@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
@@ -34,30 +36,33 @@ class ProductController extends AbstractController
 
     /**
      * @param EntityManagerInterface $entityManager
+     * @param DenormalizerInterface $denormalizer
+     * @param ValidatorInterface $validator
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+
+
     }
 
     /**
      * @param Request $request
+     * @param ValidatorInterface $validator
      * @return JsonResponse
      * @throws Exception
+     *
      */
     #[Route('product-create', name: 'product_create', methods: ['POST'])]
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
-        if (!in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
-            throw new AccessDeniedHttpException("You do not have permission.");
-        }
+        $this->checkRoleAdmin();
 
         $requestData = json_decode($request->getContent(), true);
 
         $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
 
         if (!$category) {
-            //throw new Exception("Category with id " . $requestData['category'] . " not found");
             throw new NotFoundHttpException("Category with id " . $requestData['category'] . " not found");
         }
 
@@ -69,6 +74,7 @@ class ProductController extends AbstractController
             ->setPrice($requestData['price'])
             ->setCategory($category);
 
+
         $this->entityManager->persist($product);
 
         $this->entityManager->flush();
@@ -79,7 +85,7 @@ class ProductController extends AbstractController
     /**
      * @return JsonResponse
      */
-    #[Route('product-all', name: 'product_all',methods: ['GET'])]
+    #[Route('product-all', name: 'product_all', methods: ['GET'])]
     public function getAll(): JsonResponse
     {
         $products = $this->entityManager->getRepository(Product::class)->findAll();

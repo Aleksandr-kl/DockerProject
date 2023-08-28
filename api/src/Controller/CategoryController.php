@@ -4,16 +4,29 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CategoryController extends AbstractController
 {
+    /**
+     * @return void
+     */
+    private function checkRoleAdmin(): void
+    {
+        if (!in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
+            throw new NotFoundHttpException("Resource not found");
+        }
+    }
 
     /**
      * @var EntityManagerInterface
@@ -21,11 +34,27 @@ class CategoryController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @param EntityManagerInterface $entityManager
+     * @var DenormalizerInterface
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    private DenormalizerInterface $denormalizer;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param DenormalizerInterface $denormalizer
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(EntityManagerInterface $entityManager,
+                                DenormalizerInterface  $denormalizer, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
+        $this->denormalizer = $denormalizer;
+        $this->validator = $validator;
+
     }
 
     /**
@@ -33,36 +62,37 @@ class CategoryController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('category-create', name: 'category_create')]
+    #[Route('category-create', name: 'category_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        $this->checkRoleAdmin();
+
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset($requestData['name'])) {
-            throw new Exception("Invalid request data");
-        }
+        $category = $this->denormalizer->denormalize($requestData, Category::class, "array");
+
+        $errors = $this->validator->validate($category);
 
         $category = new Category();
 
         $category->setName($requestData['name']);
 
-
         $this->entityManager->persist($category);
 
         $this->entityManager->flush();
 
-        return new JsonResponse($category,Response::HTTP_CREATED);
+        return new JsonResponse($category, Response::HTTP_CREATED);
     }
 
     /**
      * @return JsonResponse
      */
-    #[Route('product-all', name: 'product_all')]
+    #[Route('category-all', name: 'category_all', methods: ['GET'])]
     public function getAll(): JsonResponse
     {
-        $products = $this->entityManager->getRepository(Product::class)->findAll();
+        $category = $this->entityManager->getRepository(Category::class)->findAll();
 
-        return new JsonResponse($products);
+        return new JsonResponse($category);
     }
 
     /**
@@ -70,16 +100,18 @@ class CategoryController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product/{id}', name: 'product_get_item')]
+    #[Route('category/{id}', name: 'category_get_item', methods: ['GET'])]
     public function getItem(string $id): JsonResponse
     {
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
+        $this->checkRoleAdmin();
 
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+        $category = $this->entityManager->getRepository(Category::class)->find($id);
+
+        if (!$category) {
+            throw new Exception("Category with id " . $id . " not found");
         }
 
-        return new JsonResponse($product);
+        return new JsonResponse($category);
     }
 
     /**
@@ -87,21 +119,23 @@ class CategoryController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-update/{id}', name: 'product_update_item')]
+    #[Route('category-update/{id}', name: 'category_update_item', methods: ['PUT'])]
     public function updateProduct(string $id): JsonResponse
     {
-        /** @var Product $product */
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
+        $this->checkRoleAdmin();
 
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+        /** @var Category $category */
+        $category = $this->entityManager->getRepository(Category::class)->find($id);
+
+        if (!$category) {
+            throw new Exception("Category with id " . $id . " not found");
         }
 
-        $product->setName("New name");
+        $category->setName("New name");
 
         $this->entityManager->flush();
 
-        return new JsonResponse($product);
+        return new JsonResponse($category);
     }
 
     /**
@@ -109,17 +143,19 @@ class CategoryController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-delete/{id}', name: 'product_delete_item')]
-    public function deleteProduct(string $id): JsonResponse
+    #[Route('category-delete/{id}', name: 'category_delete_item', methods: ['PUT'])]
+    public function deleteCategory(string $id): JsonResponse
     {
-        /** @var Product $product */
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
+        $this->checkRoleAdmin();
 
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+        /** @var Product $category */
+        $category = $this->entityManager->getRepository(Category::class)->find($id);
+
+        if (!$category) {
+            throw new Exception("Category with id " . $id . " not found");
         }
 
-        $this->entityManager->remove($product);
+        $this->entityManager->remove($category);
 
         $this->entityManager->flush();
 

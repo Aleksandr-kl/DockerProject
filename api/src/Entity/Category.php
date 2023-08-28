@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category implements JsonSerializable
@@ -22,6 +24,8 @@ class Category implements JsonSerializable
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[NotNull]
     private ?string $name = null;
 
     /**
