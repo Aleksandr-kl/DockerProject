@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -19,6 +18,34 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @var DenormalizerInterface
+     */
+    private DenormalizerInterface $denormalizer;
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
+     * @param DenormalizerInterface $denormalizer
+     */
+    public function __construct(EntityManagerInterface $entityManager,
+                                ValidatorInterface $validator,
+                                DenormalizerInterface  $denormalizer)
+    {
+        $this->entityManager = $entityManager;
+        $this->validator = $validator;
+        $this->denormalizer = $denormalizer;
+    }
+
     /**
      * @return void
      */
@@ -30,35 +57,20 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param DenormalizerInterface $denormalizer
-     * @param ValidatorInterface $validator
-     */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-
-
-    }
-
-    /**
      * @param Request $request
-     * @param ValidatorInterface $validator
      * @return JsonResponse
      * @throws Exception
-     *
      */
     #[Route('product-create', name: 'product_create', methods: ['POST'])]
-    public function create(Request $request, ValidatorInterface $validator): JsonResponse
+    public function create(Request $request): JsonResponse
     {
         $this->checkRoleAdmin();
 
         $requestData = json_decode($request->getContent(), true);
+
+        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
+
+        $errors = $this->validator->validate($product);
 
         $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
 

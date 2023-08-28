@@ -52,6 +52,9 @@ class Product implements JsonSerializable
     #[ORM\OneToMany(mappedBy: "product", targetEntity: OrderProduct::class, cascade: ["persist", "remove"])]
     private Collection $orderProducts;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
@@ -75,11 +78,12 @@ class Product implements JsonSerializable
 
     /**
      * @param Category|null $category
-     * @return void
+     * @return self
      */
-    public function setCategory(?Category $category): void
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
+        return $this;
     }
 
     /**
