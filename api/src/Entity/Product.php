@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
 
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +13,7 @@ use JsonSerializable;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ProductConstraint]
+#[ApiResource]
 class Product implements JsonSerializable
 {
     #[ORM\Id]

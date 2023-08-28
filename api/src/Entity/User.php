@@ -89,7 +89,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string)$this->email;
     }
 
-    /** @see UserInterface
+    /**
+     * @return string[]
      */
     public function getRoles(): array
     {
