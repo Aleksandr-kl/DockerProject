@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,23 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ProductConstraint]
+//#[ProductConstraint]
+#[ApiResource(collectionOperations: [
+    "get" => [
+        "method" => "GET",
+        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
+    ]
+],
+    itemOperations: [
+        "get" => [
+            "method" => "GET"
+        ]
+    ],
+    attributes: [
+        "security"=>"is_granted ('".User::ROLE_ADMIN ."')"
+    ]
+
+)]
 class Product implements JsonSerializable
 {
     /**
@@ -41,16 +58,16 @@ class Product implements JsonSerializable
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $price = null;
 
-    /**
-     * @var Category|null
-     */
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
-    private ?Category $category = null;
-    /**
-     * @var Collection
-     */
-    #[ORM\OneToMany(mappedBy: "product", targetEntity: OrderProduct::class, cascade: ["persist", "remove"])]
-    private Collection $orderProducts;
+//    /**
+//     * @var Category|null
+//     */
+//    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+//    private ?Category $category = null;
+//    /**
+//     * @var Collection
+//     */
+//    #[ORM\OneToMany(mappedBy: "product", targetEntity: OrderProduct::class, cascade: ["persist", "remove"])]
+//    private Collection $orderProducts;
 
     /**
      *
@@ -60,31 +77,31 @@ class Product implements JsonSerializable
         $this->orderProducts = new ArrayCollection();
     }
 
-    /**
-     * @return Collection
-     */
-    public function getOrderProducts(): Collection
-    {
-        return $this->orderProducts;
-    }
+//    /**
+//     * @return Collection
+//     */
+//    public function getOrderProducts(): Collection
+//    {
+//        return $this->orderProducts;
+//    }
 
-    /**
-     * @return Category|null
-     */
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category|null $category
-     * @return self
-     */
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-        return $this;
-    }
+//    /**
+//     * @return Category|null
+//     */
+//    public function getCategory(): ?Category
+//    {
+//        return $this->category;
+//    }
+//
+//    /**
+//     * @param Category|null $category
+//     * @return self
+//     */
+//    public function setCategory(?Category $category): self
+//    {
+//        $this->category = $category;
+//        return $this;
+//    }
 
     /**
      * @return int|null
@@ -159,9 +176,9 @@ class Product implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id"       => $this->getId(),
-            "name"     => $this->getName(),
-            "price"    => $this->getPrice(),
+            "id" => $this->getId(),
+            "name" => $this->getName(),
+            "price" => $this->getPrice(),
             "category" => $this->getCategory(),
         ];
     }
