@@ -38,7 +38,7 @@ class ProductController extends AbstractController
      * @param DenormalizerInterface $denormalizer
      */
     public function __construct(EntityManagerInterface $entityManager,
-                                ValidatorInterface $validator,
+                                ValidatorInterface     $validator,
                                 DenormalizerInterface  $denormalizer)
     {
         $this->entityManager = $entityManager;
@@ -83,9 +83,7 @@ class ProductController extends AbstractController
         $product
             ->setName($requestData['name'])
             ->setCount($requestData['count'])
-            ->setPrice($requestData['price'])
-            ->setCategory($category);
-
+            ->setPrice($requestData['price']);
 
         $this->entityManager->persist($product);
 
@@ -152,8 +150,7 @@ class ProductController extends AbstractController
         $product
             ->setName($requestData['name'])
             ->setCount($requestData['count'])
-            ->setPrice($requestData['price'])
-            ->setCategory($category);
+            ->setPrice($requestData['price']);
 
         $this->entityManager->flush();
 

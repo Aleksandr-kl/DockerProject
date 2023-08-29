@@ -29,37 +29,6 @@ class Category implements JsonSerializable
     private ?string $name = null;
 
     /**
-     * @return ArrayCollection|Collection
-     */
-    public function getProducts(): ArrayCollection|Collection
-    {
-        return $this->products;
-    }
-
-    /**
-     * @param ArrayCollection|Collection $products
-     * @return void
-     */
-    public function setProducts(ArrayCollection|Collection $products): void
-    {
-        $this->products = $products;
-    }
-
-    /**
-     * @var Collection
-     */
-    #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
-    private Collection $products;
-
-    /**
-     * Category constructor
-     */
-    public function __construct()
-    {
-        $this->products = new ArrayCollection();
-    }
-
-    /**
      * @return int|null
      */
     public function getId(): ?int

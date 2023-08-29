@@ -49,7 +49,8 @@ class CategoryController extends AbstractController
      * @param ValidatorInterface $validator
      */
     public function __construct(EntityManagerInterface $entityManager,
-                                DenormalizerInterface  $denormalizer, ValidatorInterface $validator)
+                                DenormalizerInterface  $denormalizer,
+                                ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
         $this->denormalizer = $denormalizer;

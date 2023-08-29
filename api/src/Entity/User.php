@@ -58,27 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    /**
-     * @return Collection
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    /**
-     * @param Collection $orders
-     * @return void
-     */
-    public function setOrders(Collection $orders): void
-    {
-        $this->orders = $orders;
-    }
-    /**
-     * @var Collection
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
-    private Collection $orders;
     public function getId(): ?int
     {
         return $this->id;
