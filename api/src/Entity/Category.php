@@ -16,16 +16,28 @@ use Symfony\Component\Validator\Constraints\NotNull;
     "get" => [
         "method" => "GET",
         "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
+    ],
+    "post" => [
+        "method" => "POST",
+        "security" => "is_granted ('ROLE_ADMIN')"
     ]
 ],
     itemOperations: [
         "get" => [
             "method" => "GET"
+        ],
+        "put" => [
+            "method" => "PUT"
+        ],
+        "delete" => [
+            "method" => "DELETE"
         ]
+
     ],
     attributes: [
-        "security"=>"is_granted ('".User::ROLE_ADMIN ."')"
+        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
     ]
+
 )]
 class Category implements JsonSerializable
 {
@@ -49,8 +61,8 @@ class Category implements JsonSerializable
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-
     private ?string $type = null;
+
     /**
      * @return int|null
      */
@@ -103,9 +115,9 @@ class Category implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id"   => $this->getId(),
+            "id" => $this->getId(),
             "name" => $this->getName(),
-            "type"=>$this->getType()
+            "type" => $this->getType()
         ];
     }
 }

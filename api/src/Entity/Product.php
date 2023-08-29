@@ -9,7 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ProductConstraint]
@@ -20,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
     ],
     "post" => [
         "method" => "POST",
-        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
+        "security" => "is_granted ('ROLE_ADMIN')"
     ]
 ],
     itemOperations: [
@@ -29,6 +28,9 @@ use Symfony\Component\Validator\Constraints\NotNull;
         ],
         "put"=>[
             "method"=>"PUT"
+        ],
+        "delete" => [
+            "method" => "DELETE"
         ]
 
     ],
@@ -46,18 +48,21 @@ class Product implements JsonSerializable
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
     #[NotBlank]
     private ?string $name = null;
+
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
     #[NotBlank]
     private ?string $description = null;
+
     /**
      * @var int|null
      */
@@ -95,6 +100,7 @@ class Product implements JsonSerializable
 
         return $this;
     }
+
     /**
      * @return string|null
      */
@@ -113,6 +119,7 @@ class Product implements JsonSerializable
 
         return $this;
     }
+
     /**
      * @return int|null
      */
@@ -144,7 +151,6 @@ class Product implements JsonSerializable
      * @param string $price
      * @return $this
      */
-
     public function setPrice(string $price): self
     {
         $this->price = $price;
@@ -155,7 +161,6 @@ class Product implements JsonSerializable
     /**
      * @return array
      */
-
     public function jsonSerialize(): array
     {
         return [
