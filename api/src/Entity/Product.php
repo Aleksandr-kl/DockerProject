@@ -5,8 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -14,17 +12,25 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-//#[ProductConstraint]
+#[ProductConstraint]
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
+        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
+    ],
+    "post" => [
+        "method" => "POST",
         "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
     ]
 ],
     itemOperations: [
         "get" => [
             "method" => "GET"
+        ],
+        "put"=>[
+            "method"=>"PUT"
         ]
+
     ],
     attributes: [
         "security"=>"is_granted ('".User::ROLE_ADMIN ."')"
@@ -46,7 +52,12 @@ class Product implements JsonSerializable
     #[ORM\Column(length: 255)]
     #[NotBlank]
     private ?string $name = null;
-
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(length: 255)]
+    #[NotBlank]
+    private ?string $description = null;
     /**
      * @var int|null
      */
@@ -84,7 +95,24 @@ class Product implements JsonSerializable
 
         return $this;
     }
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
     /**
      * @return int|null
      */
@@ -133,7 +161,9 @@ class Product implements JsonSerializable
         return [
             "id" => $this->getId(),
             "name" => $this->getName(),
-            "price" => $this->getPrice()
+            "price" => $this->getPrice(),
+            "count"=>$this->getCount(),
+            "description"=>$this->getDescription()
         ];
     }
 }

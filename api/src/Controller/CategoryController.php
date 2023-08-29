@@ -50,7 +50,7 @@ class CategoryController extends AbstractController
      */
     public function __construct(EntityManagerInterface $entityManager,
                                 DenormalizerInterface  $denormalizer,
-                                ValidatorInterface $validator)
+                                ValidatorInterface     $validator)
     {
         $this->entityManager = $entityManager;
         $this->denormalizer = $denormalizer;
@@ -77,6 +77,8 @@ class CategoryController extends AbstractController
         $category = new Category();
 
         $category->setName($requestData['name']);
+
+        $category->setType($requestData['type']);
 
         $this->entityManager->persist($category);
 
@@ -117,22 +119,31 @@ class CategoryController extends AbstractController
 
     /**
      * @param string $id
+     * @param Request $request
      * @return JsonResponse
      * @throws Exception
      */
     #[Route('category-update/{id}', name: 'category_update_item', methods: ['PUT'])]
-    public function updateProduct(string $id): JsonResponse
+    public function updateCategory(string $id, Request $request): JsonResponse
     {
         $this->checkRoleAdmin();
 
         /** @var Category $category */
         $category = $this->entityManager->getRepository(Category::class)->find($id);
 
+        $requestData = json_decode($request->getContent(), true);
+
         if (!$category) {
             throw new Exception("Category with id " . $id . " not found");
         }
+        $category = $this->denormalizer->denormalize($requestData, Category::class, "array");
+
+        $errors = $this->validator->validate($category);
 
         $category->setName("New name");
+
+        $category->setType("New type");
+
 
         $this->entityManager->flush();
 
@@ -149,7 +160,7 @@ class CategoryController extends AbstractController
     {
         $this->checkRoleAdmin();
 
-        /** @var Product $category */
+        /** @var Category $category */
         $category = $this->entityManager->getRepository(Category::class)->find($id);
 
         if (!$category) {

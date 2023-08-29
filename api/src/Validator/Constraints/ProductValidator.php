@@ -23,27 +23,15 @@ class ProductValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, Product::class);
         }
 
-        if (!$value instanceof Product) {
-            throw new UnexpectedTypeException($value, Product::class);
+        if (!$value instanceof \App\Entity\Product) {
+            throw new UnexpectedTypeException($value, \App\Entity\Product::class);
         }
 
-
-        if (empty($value->getName())) {
-            $this->context->buildViolation('Product name cannot be empty.')
-                ->atPath('name')
-                ->addViolation();
+        if($value->getCount()<=0){
+            $this->context->addViolation("count <=0");
         }
-
-        if ($value->getCount() < 0) {
-            $this->context->buildViolation('Product count must be a positive value.')
-                ->atPath('count')
-                ->addViolation();
-        }
-
-        if ($value->getPrice() <= 0) {
-            $this->context->buildViolation('Product price must be a positive value.')
-                ->atPath('price')
-                ->addViolation();
+        if($value->getPrice()<=0){
+            $this->context->addViolation("count <=0");
         }
     }
 }

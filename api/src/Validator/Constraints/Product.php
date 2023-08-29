@@ -6,9 +6,6 @@ use Symfony\Component\Validator\Constraint;
 
 /**
  * @Annotation
- * @method getName()
- * @method getCount()
- * @method getPrice()
  */
 #[\Attribute] class Product extends Constraint
 {
@@ -22,7 +19,7 @@ use Symfony\Component\Validator\Constraint;
     }
 
     /**
-     * @return string|string[]
+     * @return array|string|string[]
      */
     public function getTargets(): array|string
     {

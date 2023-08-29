@@ -72,18 +72,19 @@ class ProductController extends AbstractController
 
         $errors = $this->validator->validate($product);
 
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
-
-        if (!$category) {
-            throw new NotFoundHttpException("Category with id " . $requestData['category'] . " not found");
-        }
+//        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
+//
+//        if (!$category) {
+//            throw new NotFoundHttpException("Category with id " . $requestData['category'] . " not found");
+//        }
 
         $product = new Product();
 
         $product
             ->setName($requestData['name'])
             ->setCount($requestData['count'])
-            ->setPrice($requestData['price']);
+            ->setPrice($requestData['price'])
+            ->setDescription($requestData['description']);
 
         $this->entityManager->persist($product);
 
@@ -141,16 +142,21 @@ class ProductController extends AbstractController
 
         $requestData = json_decode($request->getContent(), true);
 
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData['category']);
+        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
 
-        if (!$category) {
-            throw new Exception("Category with id " . $requestData['category'] . " not found");
-        }
+        $errors = $this->validator->validate($product);
+
+        //$category = $this->entityManager->getRepository(Category::class)->find($requestData['category']);
+
+//        if (!$category) {
+//            throw new Exception("Category with id " . $requestData['category'] . " not found");
+//        }
 
         $product
             ->setName($requestData['name'])
             ->setCount($requestData['count'])
-            ->setPrice($requestData['price']);
+            ->setPrice($requestData['price'])
+            ->setDescription($requestData['description']);
 
         $this->entityManager->flush();
 
