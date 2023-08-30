@@ -2,32 +2,40 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ProductConstraint]
+//#[ProductConstraint]
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
-        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')"
+        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
+        "normalization_context" =>["groups"=>["get:collection:product"]]
     ],
     "post" => [
         "method" => "POST",
-        "security" => "is_granted ('ROLE_ADMIN')"
+        "security" => "is_granted ('ROLE_ADMIN')",
+        "denormalization_context" =>["groups"=>["post:collection:product"]],
+        "normalization_context" =>["groups"=>["get:collection:product"]]
     ]
 ],
     itemOperations: [
         "get" => [
-            "method" => "GET"
+            "method" => "GET",
+            "normalization_context" =>["groups"=>["get:item:product"]]
         ],
-        "put"=>[
-            "method"=>"PUT"
+        "put" => [
+            "method" => "PUT"
         ],
         "delete" => [
             "method" => "DELETE"
@@ -35,11 +43,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
     ],
     attributes: [
-        "security"=>"is_granted ('".User::ROLE_ADMIN ."')"
+        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
     ]
 
 )]
-class Product implements JsonSerializable
+#[ApiFilter(SearchFilter::class,properties: ["name"=>"exact","description"])]
+#[ApiFilter(RangeFilter::class,properties: ["price"])]
+class Product
 {
     /**
      * @var int|null
@@ -47,6 +57,9 @@ class Product implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        "get:item:product"
+    ])]
     private ?int $id = null;
 
     /**
@@ -54,26 +67,70 @@ class Product implements JsonSerializable
      */
     #[ORM\Column(length: 255)]
     #[NotBlank]
+    #[Groups([
+        "get:collection:product",
+        "get:item:product",
+        "post:collection:product"
+    ])]
+
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[NotBlank]
+    #[NotBlank] #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
     private ?string $description = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
     private ?int $count = null;
+
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
     private ?string $price = null;
 
+    /**
+     * @var Category|null
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
+    private ?Category $category = null;
+
+    /**
+     * @return Category|null
+     */
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category|null $category
+     * @return void
+     */
+    public function setCategory(?Category $category): void
+    {
+        $this->category = $category;
+    }
     /**
      * @return int|null
      */
@@ -157,18 +214,18 @@ class Product implements JsonSerializable
 
         return $this;
     }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "price" => $this->getPrice(),
-            "count"=>$this->getCount(),
-            "description"=>$this->getDescription()
-        ];
-    }
+//
+//    /**
+//     * @return array
+//     */
+//    public function jsonSerialize(): array
+//    {
+//        return [
+//            "id" => $this->getId(),
+//            "name" => $this->getName(),
+//            "price" => $this->getPrice(),
+//            "count" => $this->getCount(),
+//            "description" => $this->getDescription()
+//        ];
+//    }
 }

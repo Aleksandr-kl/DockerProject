@@ -5,8 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Validator\Constraints\Category as CategoryConstraint;
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
@@ -39,7 +41,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
     ]
 
 )]
-class Category implements JsonSerializable
+class Category
 {
     /**
      * @var int|null
@@ -47,6 +49,9 @@ class Category implements JsonSerializable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        "get:item:product"
+    ])]
     private ?int $id = null;
 
     /**
@@ -55,13 +60,40 @@ class Category implements JsonSerializable
     #[ORM\Column(length: 255)]
     #[NotBlank]
     #[NotNull]
+    #[Groups([
+        "get:item:product",
+
+    ])]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups([
+        "get:item:product",
+
+    ])]
     private ?string $type = null;
+
+    /**
+     * @return Collection
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function setProducts(Collection $products): void
+    {
+        $this->products = $products;
+    }
+
+    /**
+     * @var Collection
+     */
+    #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
+    private Collection $products;
 
     /**
      * @return int|null
@@ -109,15 +141,4 @@ class Category implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "type" => $this->getType()
-        ];
-    }
 }

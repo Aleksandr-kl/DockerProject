@@ -56,42 +56,42 @@ class ProductController extends AbstractController
         }
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws Exception
-     */
-    #[Route('product-create', name: 'product_create', methods: ['POST'])]
-    public function create(Request $request): JsonResponse
-    {
-        $this->checkRoleAdmin();
-
-        $requestData = json_decode($request->getContent(), true);
-
-        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
-
-        $errors = $this->validator->validate($product);
-
-//        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
+//    /**
+//     * @param Request $request
+//     * @return JsonResponse
+//     * @throws Exception
+//     */
+//    #[Route('product-create', name: 'product_create', methods: ['POST'])]
+//    public function create(Request $request): JsonResponse
+//    {
+//        $this->checkRoleAdmin();
 //
-//        if (!$category) {
-//            throw new NotFoundHttpException("Category with id " . $requestData['category'] . " not found");
-//        }
-
-        $product = new Product();
-
-        $product
-            ->setName($requestData['name'])
-            ->setCount($requestData['count'])
-            ->setPrice($requestData['price'])
-            ->setDescription($requestData['description']);
-
-        $this->entityManager->persist($product);
-
-        $this->entityManager->flush();
-
-        return new JsonResponse($product, Response::HTTP_CREATED);
-    }
+//        $requestData = json_decode($request->getContent(), true);
+//
+//        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
+//
+//        $errors = $this->validator->validate($product);
+//
+////        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
+////
+////        if (!$category) {
+////            throw new NotFoundHttpException("Category with id " . $requestData['category'] . " not found");
+////        }
+//
+//        $product = new Product();
+//
+//        $product
+//            ->setName($requestData['name'])
+//            ->setCount($requestData['count'])
+//            ->setPrice($requestData['price'])
+//            ->setDescription($requestData['description']);
+//
+//        $this->entityManager->persist($product);
+//
+//        $this->entityManager->flush();
+//
+//        return new JsonResponse($product, Response::HTTP_CREATED);
+//    }
 
     /**
      * @return JsonResponse
