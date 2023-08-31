@@ -20,19 +20,19 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     "get" => [
         "method" => "GET",
         "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
-        "normalization_context" =>["groups"=>["get:collection:product"]]
+        "normalization_context" => ["groups" => ["get:collection:product"]]
     ],
     "post" => [
         "method" => "POST",
         "security" => "is_granted ('ROLE_ADMIN')",
-        "denormalization_context" =>["groups"=>["post:collection:product"]],
-        "normalization_context" =>["groups"=>["get:collection:product"]]
+        "denormalization_context" => ["groups" => ["post:collection:product"]],
+        "normalization_context" => ["groups" => ["get:collection:product"]]
     ]
 ],
     itemOperations: [
         "get" => [
             "method" => "GET",
-            "normalization_context" =>["groups"=>["get:item:product"]]
+            "normalization_context" => ["groups" => ["get:item:product"]]
         ],
         "put" => [
             "method" => "PUT"
@@ -47,8 +47,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     ]
 
 )]
-#[ApiFilter(SearchFilter::class,properties: ["name"=>"exact","description"])]
-#[ApiFilter(RangeFilter::class,properties: ["price"])]
+#[ApiFilter(SearchFilter::class, properties: ["name" => "exact", "description"])]
+#[ApiFilter(RangeFilter::class, properties: ["price"])]
 class Product
 {
     /**
@@ -72,7 +72,6 @@ class Product
         "get:item:product",
         "post:collection:product"
     ])]
-
     private ?string $name = null;
 
     /**
@@ -125,12 +124,14 @@ class Product
 
     /**
      * @param Category|null $category
-     * @return void
+     * @return $this
      */
-    public function setCategory(?Category $category): void
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
+        return $this;
     }
+
     /**
      * @return int|null
      */

@@ -84,9 +84,14 @@ class Category
         return $this->products;
     }
 
-    public function setProducts(Collection $products): void
+    /**
+     * @param Collection $products
+     * @return $this
+     */
+    public function setProducts(Collection $products): self
     {
         $this->products = $products;
+        return $this;
     }
 
     /**
