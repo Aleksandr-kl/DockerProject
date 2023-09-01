@@ -26,10 +26,12 @@ use Symfony\Component\Validator\Constraints\NotNull;
 ],
     itemOperations: [
         "get" => [
-            "method" => "GET"
+            "method" => "GET",
+            "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
         ],
         "put" => [
             "method" => "PUT"
+
         ],
         "delete" => [
             "method" => "DELETE"

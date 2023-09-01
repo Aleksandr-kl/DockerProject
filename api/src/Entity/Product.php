@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Action\CreateProductAction;
+use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\DBAL\Types\Types;
@@ -26,7 +28,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         "method" => "POST",
         "security" => "is_granted ('ROLE_ADMIN')",
         "denormalization_context" => ["groups" => ["post:collection:product"]],
-        "normalization_context" => ["groups" => ["get:collection:product"]]
+        "normalization_context" => ["groups" => ["get:collection:product"]],
+        "controller"=>CreateProductAction::class
     ]
 ],
     itemOperations: [
@@ -49,6 +52,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 )]
 #[ApiFilter(SearchFilter::class, properties: ["name" => "exact", "description"])]
 #[ApiFilter(RangeFilter::class, properties: ["price"])]
+#[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
 {
     /**
