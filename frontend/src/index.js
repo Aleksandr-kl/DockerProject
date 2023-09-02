@@ -7,18 +7,16 @@ import Page from "./components/Page/Page";
 import Counter from "./components/Counter";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const arr = [2, 5, 7, 99, 66, 14];
+const arr = [-11, 5, 7, 11, -7, 15];
 root.render(
     <React.StrictMode>
-        <Counter/>
+
         {arr.map(
             (value, index) =>
-                <Counter key={index} value={value} color="yellow"/>
+                <Counter key={index} value={value} min={-10} max={15}/>
         )}
+
     </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
