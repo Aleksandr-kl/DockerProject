@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-//#[ProductConstraint]
+#[ProductConstraint]
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     ],
     "post" => [
         "method" => "POST",
-        "security" => "is_granted ('ROLE_ADMIN')",
+        "security" => "is_granted ('" . User::ROLE_ADMIN . "')",
         "denormalization_context" => ["groups" => ["post:collection:product"]],
         "normalization_context" => ["groups" => ["get:collection:product"]],
         "controller"=>CreateProductAction::class

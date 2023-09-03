@@ -27,7 +27,7 @@ class ProductValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, ProductEntity::class);
         }
 
-        if($value->getCount()<-50){
+        if($value->getCount()<=0){
             $this->context->addViolation("count <=0");
         }
         if($value->getPrice()<=0){

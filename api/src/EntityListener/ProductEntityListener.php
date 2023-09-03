@@ -3,29 +3,47 @@
 namespace App\EntityListener;
 
 use App\Entity\Product;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ProductEntityListener
 {
-
-    public function prePersist(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function prePersist(Product $product, LifecycleEventArgs $eventArgs): void
     {
-        $test = 1;
+        $product->setName($product->getName() . ' ' . '777');
     }
 
-    public function postPersist(Product $product, PostPersistEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param PostPersistEventArgs $eventArgs
+     * @return void
+     */
+    public function postPersist(Product $product, PostPersistEventArgs $eventArgs): void
     {
         $test = $eventArgs->getObjectManager()->getUnitOfWork()->getEntityChangeSet($product);
     }
 
-    public function preUpdate(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function preUpdate(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $test = 1;
     }
 
-    public function postUpdate(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function postUpdate(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $test = 1;
     }
