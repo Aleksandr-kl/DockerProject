@@ -10,10 +10,9 @@ class ProductEntityListener
 {
     /**
      * @param Product $product
-     * @param LifecycleEventArgs $eventArgs
      * @return void
      */
-    public function prePersist(Product $product, LifecycleEventArgs $eventArgs): void
+    public function prePersist(Product $product): void
     {
         $product->setName($product->getName() . ' ' . '777');
     }
