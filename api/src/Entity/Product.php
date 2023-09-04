@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         "security" => "is_granted ('" . User::ROLE_ADMIN . "')",
         "denormalization_context" => ["groups" => ["post:collection:product"]],
         "normalization_context" => ["groups" => ["get:collection:product"]],
-        "controller"=>CreateProductAction::class
+        "controller" => CreateProductAction::class
     ]
 ],
     itemOperations: [
@@ -94,7 +94,8 @@ class Product
     #[ORM\Column]
     #[Groups([
         "get:item:product",
-        "post:collection:product"
+        "post:collection:product",
+        "get:collection:product"
     ])]
     private ?int $count = null;
 
@@ -104,7 +105,8 @@ class Product
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     #[Groups([
         "get:item:product",
-        "post:collection:product"
+        "post:collection:product",
+        "get:collection:product"
     ])]
     private ?string $price = null;
 
@@ -117,6 +119,30 @@ class Product
         "post:collection:product"
     ])]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "products")]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
+    private ?User $user = null;
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     * @return void
+     */
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
+    }
 
     /**
      * @return Category|null
