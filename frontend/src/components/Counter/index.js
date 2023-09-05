@@ -27,6 +27,12 @@ import PropTypes from "prop-types";
 
 function Counter({value = 5, padding = 20, min = -Infinity, max = Infinity}) {
     const [currentValue, setValue] = useState(value);
+    useEffect(() => {
+        console.log('Counter mounted');
+        return () => {
+            console.log('Counter unmounted')
+        }
+    },[])
 
     const [color, setColor] = useState("green");
 
@@ -54,7 +60,7 @@ function Counter({value = 5, padding = 20, min = -Infinity, max = Infinity}) {
 
             <button onClick={() => {
                 setValue(currentValue + 1)
-            }}>button -
+            }}>button +
             </button>
         </div>
     );
