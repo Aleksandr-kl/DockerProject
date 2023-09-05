@@ -21,7 +21,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
-        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
+        "security" => "is_granted ('" . User::ROLE_ADMIN . "')",
+        //"security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
         "normalization_context" => ["groups" => ["get:collection:product"]]
     ],
     "post" => [
