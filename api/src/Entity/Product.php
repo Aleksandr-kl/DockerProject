@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Action\CreateProductAction;
 use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
@@ -21,8 +21,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
-        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
-        "normalization_context" => ["groups" => ["get:collection:product"]]
+       // "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
+        "normalization_context" => ["groups" => ["get:collection:product"]],
+        "path"=>"products"
     ],
     "post" => [
         "method" => "POST",
@@ -44,13 +45,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
             "method" => "DELETE"
         ]
 
-    ],
-    attributes: [
-        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
     ]
+//    attributes: [
+//        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
+//    ]
 
 )]
-#[ApiFilter(SearchFilter::class, properties: ["name" => "exact", "description"])]
+#[ApiFilter(SearchFilter::class, properties: ["name"=>"partial"])]
 #[ApiFilter(RangeFilter::class, properties: ["price"])]
 #[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
@@ -137,11 +138,13 @@ class Product
 
     /**
      * @param User|null $user
-     * @return void
+     * @return Product
      */
-    public function setUser(?User $user): void
+    public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
     }
 
     /**
@@ -159,6 +162,7 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
