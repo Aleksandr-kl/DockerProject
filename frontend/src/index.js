@@ -19,7 +19,6 @@ root.render(
                     <Counter key={index} value={value} min={-10} max={15}/>
             )}
         </BrowserRouter>
-
     </React.StrictMode>
 );
 
