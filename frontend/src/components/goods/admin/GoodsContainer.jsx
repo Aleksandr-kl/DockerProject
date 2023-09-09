@@ -14,7 +14,7 @@ const GoodsContainer = () => {
 
     const [searchParams] = useSearchParams();
 
-    const [goods, setGoods] = useState(null);
+    const [goods, setGoods,] = useState(null);
 
     const [paginationInfo, setPaginationInfo] = useState({
         totalItems: null,
@@ -24,18 +24,23 @@ const GoodsContainer = () => {
 
     const [filterData, setFilterData] = useState({
         "page": checkFilterItem(searchParams, "page", 1, true),
-        "name": checkFilterItem(searchParams, "name", null)
+        "name": checkFilterItem(searchParams, "name", null),
+        "price": checkFilterItem(searchParams, "price", null, true)
     });
 
     const fetchProducts = () => {
         let filterUrl = fetchFilterData(filterData);
         navigate(filterUrl);
 
-        axios.get("/api/products" + filterUrl + "&itemsPerPage=" + paginationInfo.itemsPerPage, userAuthenticationConfig()).then(response => {
+        axios.get("/api/products" + filterUrl + "&itemsPerPage=" + paginationInfo.itemsPerPage,
+            userAuthenticationConfig())
+            .then(response => {
             if (response.status === responseStatus.HTTP_OK && response.data["hydra:member"]) {
                 setGoods(response.data["hydra:member"]);
-                setPaginationInfo({...paginationInfo, totalItems: response.data["hydra:totalItems"],
-                totalPageCount: Math.ceil(response.data["hydra:totalItems"] / paginationInfo.itemsPerPage)});
+                setPaginationInfo({
+                    ...paginationInfo, totalItems: response.data["hydra:totalItems"],
+                    totalPageCount: Math.ceil(response.data["hydra:totalItems"] / paginationInfo.itemsPerPage)
+                });
             }
         }).catch(error => {
             console.log("error");
@@ -63,7 +68,7 @@ const GoodsContainer = () => {
                 </Link>
                 <Typography color="text.primary">Goods</Typography>
             </Breadcrumbs>
-            <Typography variant="h4" component="h1" mt={1}>
+            <Typography variant="h4" component="h1" mt={1} mb={2}>
                 Goods
             </Typography>
             <GoodsFilter
@@ -72,13 +77,14 @@ const GoodsContainer = () => {
             <GoodsList
                 goods={goods}
             />
-            {paginationInfo.totalPageCount &&
+            { paginationInfo.totalPageCount &&
                 <Pagination
                     count={paginationInfo.totalPageCount}
                     shape="rounded"
                     page={filterData.page}
                     onChange={(event, page) => onChangePage(event, page)}
-                />}
+                />
+            }
         </>
     );
 

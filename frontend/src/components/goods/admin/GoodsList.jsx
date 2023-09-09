@@ -7,7 +7,7 @@ const GoodsList = ({goods}) => {
             {goods && goods.map((item, key) => (
                 <div key={key}>
                     <GoodsItem
-                    good={item}/>
+                        good={item}/>
                 </div>
             ))
             }

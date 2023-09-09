@@ -22,3 +22,9 @@ a {
   padding-top: 25px;
   border-top: 1px solid #efefef;
 }
+
+.filter {
+  padding: 15px;
+  background-color: rgba(211, 211, 211, 0.3);
+  border-radius: 4px;
+}

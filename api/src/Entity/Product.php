@@ -6,13 +6,11 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Action\CreateProductAction;
 use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -21,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ApiResource(collectionOperations: [
     "get" => [
         "method" => "GET",
-       // "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
+        "security" => "is_granted ('ROLE_ADMIN') or is_granted ('ROLE_USER')",
         "normalization_context" => ["groups" => ["get:collection:product"]],
         "path"=>"products"
     ],
@@ -29,8 +27,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         "method" => "POST",
         "security" => "is_granted ('" . User::ROLE_ADMIN . "')",
         "denormalization_context" => ["groups" => ["post:collection:product"]],
-        "normalization_context" => ["groups" => ["get:collection:product"]],
-        "controller" => CreateProductAction::class
+        "normalization_context" => ["groups" => ["get:collection:product"]]
     ]
 ],
     itemOperations: [
@@ -45,10 +42,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
             "method" => "DELETE"
         ]
 
+    ],
+    attributes: [
+        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
     ]
-//    attributes: [
-//        "security" => "is_granted ('" . User::ROLE_ADMIN . "')"
-//    ]
 
 )]
 #[ApiFilter(SearchFilter::class, properties: ["name"=>"partial"])]
@@ -85,7 +82,8 @@ class Product
     #[ORM\Column(length: 255)]
     #[NotBlank] #[Groups([
         "get:item:product",
-        "post:collection:product"
+        "post:collection:product",
+        "get:collection:product"
     ])]
     private ?string $description = null;
 
@@ -93,6 +91,7 @@ class Product
      * @var int|null
      */
     #[ORM\Column]
+    #[NotBlank]
     #[Groups([
         "get:item:product",
         "post:collection:product",
@@ -104,6 +103,7 @@ class Product
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    #[NotBlank]
     #[Groups([
         "get:item:product",
         "post:collection:product",
@@ -123,8 +123,7 @@ class Product
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "products")]
     #[Groups([
-        "get:item:product",
-        "post:collection:product"
+        "get:item:product"
     ])]
     private ?User $user = null;
 
